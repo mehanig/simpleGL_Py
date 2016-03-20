@@ -84,6 +84,7 @@ def triangle(t0, t1, t2, image, color):
         for pos in range(Ax, Bx):
             image[pos, t0.y+i] = color
 
+
 if __name__ == '__main__':
     width = 499
     height = 499
@@ -102,19 +103,7 @@ if __name__ == '__main__':
             x1 = (v1.x+1.) * width/2.
             y1 = (v1.y+1.) * height/2.
             triangle_coords.append([int(x0), int(y0)])
-            # print('call:', int(x0), int(y0), int(x1), int(y1))
-            # line(int(x0), int(y0), int(x1), int(y1), pixels, green)
         triangle(triangle_coords[0], triangle_coords[1], triangle_coords[2], pixels, randcolor())
-
-
-
-    # tr0 = [[10, 70], [50, 160], [70, 80]]
-    # tr1 = [[180, 50], [150, 1], [70, 180]]
-    # tr2 = [[180, 150], [120, 160], [130, 180]]
-    #
-    # triangle(tr0[0], tr0[1], tr0[2], pixels, red)
-    # triangle(tr1[0], tr1[1], tr1[2], pixels, blue)
-    # triangle(tr2[0], tr2[1], tr2[2], pixels, green)
 
     ImageOps.flip(img).show()
 

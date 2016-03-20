@@ -86,8 +86,8 @@ def triangle(t0, t1, t2, image, color):
 
 
 if __name__ == '__main__':
-    width = 499
-    height = 499
+    width = 2499
+    height = 2499
     img = Image.new('RGB', (width+1, height+1), "black") # create a new black image
     pixels = img.load()
 
@@ -98,10 +98,10 @@ if __name__ == '__main__':
         for j in range(len_face):
             v0 = model.verts[face[j]]
             v1 = model.verts[face[(j+1) % len_face]]
-            x0 = (v0.x+1.) * width/2.
-            y0 = (v0.y+1.) * height/2.
-            x1 = (v1.x+1.) * width/2.
-            y1 = (v1.y+1.) * height/2.
+            x0 = (v0.x+1.) * width/2
+            y0 = (v0.y+1.) * height/2
+            x1 = (v1.x+1.) * width/2
+            y1 = (v1.y+1.) * height/2
             triangle_coords.append([int(x0), int(y0)])
         triangle(triangle_coords[0], triangle_coords[1], triangle_coords[2], pixels, randcolor())
 

@@ -16,18 +16,20 @@ def line(x0, y0, x1, y1, image, color):
         x0, x1 = x1, x0
         y0, y1 = y1, y0
     y = y0
-    error = 0
-    deltaerr = abs((y1 - y0) / (x1 - x0))
+    dx = x1 - x0
+    dy = y1 - y0
+    derror2 = abs(dy) * 2
+    error2 = 0
     for x in range(x0, x1):
         # // if transposed, de-transpose
         if steep:
             image[y, x] = color
         else:
             image[x, y] = color
-        error += deltaerr
-        if error > 0.5:
+        error2 += derror2
+        if error2 > dx:
             y = y + 1 if y1 > y0 else y - 1
-            error -= 1.
+            error2 -= dx*2
 
 
 if __name__ == '__main__':

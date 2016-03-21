@@ -1,4 +1,5 @@
 import random
+import math
 from collections import namedtuple
 
 from PIL import Image, ImageOps
@@ -8,6 +9,7 @@ green = (0, 255, 0)
 blue = (0, 0, 255)
 white = (255, 255, 255)
 randcolor = lambda: (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
+gray_intencify = lambda x: (int(255 * x), int(255 * x), int(255 * x))
 
 Point2d = namedtuple('Point2d', ['x', 'y'])
 Point3d = namedtuple('Point3d', ['x', 'y', 'z'])
@@ -85,25 +87,52 @@ def triangle(t0, t1, t2, image, color):
             image[pos, t0.y+i] = color
 
 
+def cross_product(_v1, _v2):
+    c = [_v1[1]*_v2[2] - _v1[2]*_v2[1],
+         _v1[2]*_v2[0] - _v1[0]*_v2[2],
+         _v1[0]*_v2[1] - _v1[1]*_v2[0]]
+    return Point3d(*c)
+
+
+def vect3d_minus(_v1, _v2):
+    return Point3d(_v1.x-_v2.x, _v1.y-_v2.y, _v1.z-_v2.z)
+
+
+def vect3d_mult(_v1, _v2):
+    return _v1.x*_v2.x + _v1.y*_v2.y + _v1.z*_v2.z
+
+
+def normalize(_v):
+    norm = math.sqrt(_v.x ** 2 + _v.y ** 2 + _v.z ** 2)
+    mult = 1/norm
+    return Point3d(_v.x*mult, _v.y*mult, _v.z*mult)
+
+
 if __name__ == '__main__':
-    width = 2499
-    height = 2499
+    width = 699
+    height = 699
     img = Image.new('RGB', (width+1, height+1), "black") # create a new black image
     pixels = img.load()
 
     model = Model('african_head.obj')
+    light_dir = Point3d(0, 0, -1)
     for face in model.faces:
         len_face = len(face)
         triangle_coords = []
+        world_coords = []
         for j in range(len_face):
             v0 = model.verts[face[j]]
             v1 = model.verts[face[(j+1) % len_face]]
             x0 = (v0.x+1.) * width/2
             y0 = (v0.y+1.) * height/2
-            x1 = (v1.x+1.) * width/2
-            y1 = (v1.y+1.) * height/2
             triangle_coords.append([int(x0), int(y0)])
-        triangle(triangle_coords[0], triangle_coords[1], triangle_coords[2], pixels, randcolor())
+            world_coords.append(v0)
+        v1 = vect3d_minus(world_coords[2], world_coords[0])
+        v2 = vect3d_minus(world_coords[1], world_coords[0])
+        normal = normalize(cross_product(v1, v2))
+        intencity = vect3d_mult(normal, light_dir)
+        if intencity > 0:
+            triangle(triangle_coords[0], triangle_coords[1], triangle_coords[2], pixels, gray_intencify(intencity))
 
     ImageOps.flip(img).show()
 
